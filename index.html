@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Osan Audios</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      background: #f8f9fa;
+      color: #1a1a1a;
+      line-height: 1.5;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .hint { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 {
+      font-size: 0.95rem;
+      margin: 0 0 0.75rem;
+      word-break: break-word;
+    }
+    audio { width: 100%; margin-bottom: 0.75rem; }
+    .link-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    .link-row input {
+      flex: 1;
+      font-size: 0.8rem;
+      padding: 0.5rem 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      direction: ltr;
+      text-align: left;
+    }
+    .link-row button {
+      padding: 0.5rem 0.85rem;
+      border: none;
+      border-radius: 6px;
+      background: #0d6efd;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .link-row button:hover { background: #0b5ed7; }
+    .link-row button.copied { background: #198754; }
+  </style>
+</head>
+<body>
+  <h1>Osan Audios</h1>
+  <p class="hint">اضغط «نسخ» لنسخ رابط الملف المباشر واستخدامه أونلاين.</p>
+  <div id="list"></div>
+
+  <script>
+    const files = [
+      { path: "audios/audio-01.ogg", title: "صوت 1" },
+      { path: "audios/audio-02.ogg", title: "صوت 2" },
+      { path: "audios/audio-03.ogg", title: "صوت 3" },
+      { path: "audios/audio-04.ogg", title: "صوت 4" }
+    ];
+
+    const base = new URL(".", window.location.href).href;
+    const list = document.getElementById("list");
+
+    files.forEach(({ path, title }) => {
+      const name = path.split("/").pop();
+      const url = new URL(path, base).href;
+
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <h2>${title} <span style="color:#888;font-weight:normal">(${name})</span></h2>
+        <audio controls preload="metadata" src="${encodeURI(path)}"></audio>
+        <div class="link-row">
+          <input type="text" readonly value="${url}">
+          <button type="button">نسخ</button>
+        </div>
+      `;
+
+      const btn = card.querySelector("button");
+      const input = card.querySelector("input");
+      btn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(input.value);
+        btn.textContent = "تم النسخ";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "نسخ";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+
+      list.appendChild(card);
+    });
+  </script>
+</body>
+</html>
