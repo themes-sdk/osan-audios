@@ -4,87 +4,329 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Osan Audios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #eef1f4;
+      --bg-deep: #e2e7ed;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-solid: #ffffff;
+      --ink: #15202b;
+      --muted: #5c6b7a;
+      --line: rgba(21, 32, 43, 0.1);
+      --accent: #0e7c6b;
+      --accent-hover: #0a6356;
+      --accent-soft: rgba(14, 124, 107, 0.12);
+      --success: #1f7a4c;
+      --success-soft: rgba(31, 122, 76, 0.12);
+      --radius: 14px;
+      --shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 10px 30px rgba(21, 32, 43, 0.06);
+      --font-ar: "IBM Plex Sans Arabic", Tahoma, sans-serif;
+      --font-brand: "Outfit", "IBM Plex Sans Arabic", sans-serif;
+    }
+
     * { box-sizing: border-box; }
+
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
-      max-width: 720px;
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-ar);
+      color: var(--ink);
+      line-height: 1.6;
+      background:
+        radial-gradient(900px 420px at 10% -10%, rgba(14, 124, 107, 0.14), transparent 55%),
+        radial-gradient(700px 380px at 100% 0%, rgba(45, 90, 140, 0.1), transparent 50%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+      background-attachment: fixed;
+    }
+
+    .wrap {
+      width: min(740px, calc(100% - 2rem));
       margin: 0 auto;
-      padding: 2rem 1.25rem;
-      background: #f8f9fa;
-      color: #1a1a1a;
-      line-height: 1.5;
+      padding: 2.75rem 0 4rem;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-    .hint { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .card {
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
+
+    header {
+      margin-bottom: 2rem;
+      animation: rise 0.55s ease both;
     }
-    .card h2 {
+
+    .brand {
+      font-family: var(--font-brand);
+      font-size: clamp(2.2rem, 6vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin: 0 0 0.65rem;
+    }
+
+    .brand span {
+      display: inline-block;
+      color: var(--accent);
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
       font-size: 0.95rem;
-      margin: 0 0 0.75rem;
-      word-break: break-word;
+      max-width: 38rem;
     }
-    audio { width: 100%; margin-bottom: 0.75rem; }
-    .link-row {
+
+    .hint code {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.84em;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0.1rem 0.35rem;
+    }
+
+    #list {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .status {
       display: flex;
-      gap: 0.5rem;
-      align-items: stretch;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      padding: 1.25rem 0;
     }
-    .link-row input {
-      flex: 1;
-      font-size: 0.8rem;
-      padding: 0.5rem 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+
+    .status::before {
+      content: "";
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid var(--line);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .empty {
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .card {
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem 1.2rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      animation: rise 0.5s ease both;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(14, 124, 107, 0.28);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 16px 36px rgba(21, 32, 43, 0.09);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .num {
+      flex: 0 0 auto;
+      width: 2.4rem;
+      height: 2.4rem;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-family: var(--font-brand);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .card-meta {
+      min-width: 0;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .fname {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.78rem;
       direction: ltr;
-      text-align: left;
-    }
-    .link-row button {
-      padding: 0.5rem 0.85rem;
-      border: none;
-      border-radius: 6px;
-      background: #0d6efd;
-      color: #fff;
-      cursor: pointer;
-      font-size: 0.85rem;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .link-row button:hover { background: #0b5ed7; }
-    .link-row button.copied { background: #198754; }
+
+    audio {
+      width: 100%;
+      height: 40px;
+      margin-bottom: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .link-row {
+      display: flex;
+      gap: 0.55rem;
+      align-items: stretch;
+    }
+
+    .link-row input {
+      flex: 1;
+      min-width: 0;
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface-solid);
+      color: var(--muted);
+      direction: ltr;
+      text-align: left;
+      outline: none;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .link-row input:focus {
+      border-color: rgba(14, 124, 107, 0.45);
+      color: var(--ink);
+    }
+
+    .link-row button {
+      flex: 0 0 auto;
+      padding: 0.65rem 1rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .link-row button:hover { background: var(--accent-hover); }
+    .link-row button:active { transform: scale(0.97); }
+
+    .link-row button.copied {
+      background: var(--success);
+      box-shadow: 0 0 0 3px var(--success-soft);
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 520px) {
+      .wrap { width: min(100% - 1.25rem, 740px); padding-top: 1.75rem; }
+      .card { padding: 1rem; }
+      .link-row { flex-direction: column; }
+      .link-row button { width: 100%; }
+      .fname { text-align: left; }
+    }
   </style>
 </head>
 <body>
-  <h1>Osan Audios</h1>
-  <p class="hint">اضغط «نسخ» لنسخ رابط الملف المباشر واستخدامه أونلاين.</p>
-  <div id="list"></div>
+  <div class="wrap">
+    <header>
+      <h1 class="brand">Osan <span>Audios</span></h1>
+      <p class="hint">اضغط «نسخ» لنسخ رابط الملف المباشر واستخدامه أونلاين. أضف ملفات باسم <code>audio-01.mp3</code>, <code>audio-02.mp3</code>… وستظهر تلقائياً.</p>
+    </header>
+    <div id="list"><p class="status" id="status">جاري تحميل الأصوات…</p></div>
+  </div>
 
   <script>
-    const files = [
-      { path: "audios/audio-01.mp3", title: "صوت 1" },
-      { path: "audios/audio-02.mp3", title: "صوت 2" },
-      { path: "audios/audio-03.mp3", title: "صوت 3" },
-      { path: "audios/audio-04.mp3", title: "صوت 4" }
-    ];
-
     const base = new URL(".", window.location.href).href;
     const list = document.getElementById("list");
+    const status = document.getElementById("status");
 
-    files.forEach(({ path, title }) => {
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function fileExists(path) {
+      return new Promise((resolve) => {
+        const audio = new Audio();
+        let settled = false;
+        const done = (ok) => {
+          if (settled) return;
+          settled = true;
+          audio.onloadedmetadata = null;
+          audio.onerror = null;
+          audio.removeAttribute("src");
+          audio.load();
+          resolve(ok);
+        };
+        audio.preload = "metadata";
+        audio.onloadedmetadata = () => done(true);
+        audio.onerror = () => done(false);
+        audio.src = path;
+      });
+    }
+
+    async function discoverAudios(max = 99) {
+      const files = [];
+      for (let i = 1; i <= max; i++) {
+        const path = `audios/audio-${pad(i)}.mp3`;
+        if (!(await fileExists(path))) break;
+        files.push({ path, title: `صوت ${i}`, index: i });
+      }
+      return files;
+    }
+
+    function renderCard({ path, title, index }, order) {
       const name = path.split("/").pop();
       const url = new URL(path, base).href;
 
       const card = document.createElement("article");
       card.className = "card";
+      card.style.animationDelay = `${Math.min(order, 12) * 45}ms`;
       card.innerHTML = `
-        <h2>${title} <span style="color:#888;font-weight:normal">(${name})</span></h2>
+        <div class="card-head">
+          <div class="num">${pad(index)}</div>
+          <div class="card-meta">
+            <h2>${title}</h2>
+            <span class="fname">${name}</span>
+          </div>
+        </div>
         <audio controls preload="metadata" src="${encodeURI(path)}"></audio>
         <div class="link-row">
-          <input type="text" readonly value="${url}">
+          <input type="text" readonly value="${url}" aria-label="رابط الملف">
           <button type="button">نسخ</button>
         </div>
       `;
@@ -102,7 +344,17 @@
       });
 
       list.appendChild(card);
-    });
+    }
+
+    (async () => {
+      const files = await discoverAudios();
+      status?.remove();
+      if (!files.length) {
+        list.innerHTML = `<p class="empty">لا توجد أصوات. أضف ملفات مثل <code>audios/audio-01.mp3</code>.</p>`;
+        return;
+      }
+      files.forEach((file, i) => renderCard(file, i));
+    })();
   </script>
 </body>
 </html>
